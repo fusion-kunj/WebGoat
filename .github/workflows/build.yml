@@ -18,7 +18,7 @@ jobs:
           java-version: '21'
 
   build:
-    runs-on: WebGoat-Latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4.1.6
 
