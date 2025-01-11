@@ -1,11 +1,20 @@
-name: "Build"
+name: "Main / Pull requests build"
 on:
-    workflow_dispatch:
+    pull_request:
+        paths-ignore:
+            - '.txt'
+            - 'LICENSE'
+            - 'docs/**'
+        branches: [ main ]
+    push:
+        branches:
+            - main
 
 jobs:
     pre-commit:
+        name: Pre-commit check
         runs-on: self-hosted
-         steps:
+        steps:
             -   name: Checkout git repository
                 uses: actions/checkout@v4.1.6
             -   name: Setup python
@@ -24,6 +33,11 @@ jobs:
     build:
         runs-on: self-hosted
         needs: [ pre-commit ]
+        strategy:
+            fail-fast: true
+            matrix:
+                os: [ windows-latest, ubuntu-latest, macos-13 ]
+            max-parallel: 1
         steps:
             -   uses: actions/checkout@v4.1.6
             -   name: Set up JDK 23
@@ -34,4 +48,4 @@ jobs:
                     architecture: x64
                     cache: 'maven'
             -   name: Build with Maven
-                run: ./mvnw.cmd clean install -DskipTests
+                run: mvn --no-transfer-progress verify
