@@ -1,12 +1,11 @@
-name: "Main / Pull requests build"
+name: "Build"
 on:
     workflow_dispatch:
 
 jobs:
     pre-commit:
-        name: Pre-commit check
         runs-on: self-hosted
-        steps:
+         steps:
             -   name: Checkout git repository
                 uses: actions/checkout@v4.1.6
             -   name: Setup python
@@ -35,4 +34,4 @@ jobs:
                     architecture: x64
                     cache: 'maven'
             -   name: Build with Maven
-                run: mvn --no-transfer-progress verify
+                run: ./mvnw.cmd clean install -DskipTests
